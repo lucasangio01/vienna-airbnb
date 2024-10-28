@@ -1,2 +1,1 @@
-# airbnb-exam
-Group project for the exam of advanced multivariate statistics
+# Group project for the exam of Advanced Multivariate Statistics
