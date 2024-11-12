@@ -24,6 +24,9 @@ data$host_is_superhost <- as.factor(data$host_is_superhost)
 colnames(data)[colnames(data) == 'price'] <- 'price_dollars'
 colnames(data)[colnames(data) == 'neighbourhood_cleansed'] <- 'neighbourhood'
 
+data$upload_date <- "2024-09-12"
+data$apt_age_days <- ceiling(as.numeric(difftime(data$upload_date , data$first_review , units = c("days"))))
+
 data$ID <- 1:nrow(data)
 data <- data %>% select(ID, everything())
 data <- data %>% select(-id)
@@ -62,6 +65,6 @@ data$dist_schonbrunn_km <- round((as.numeric(st_distance(data_sf, schonbrunn_poi
 data$dist_stephansdom_km <- round((as.numeric(st_distance(data_sf, stephansdom_point)) / 1000), 2)
 data$dist_train_station_km <- round((as.numeric(st_distance(data_sf, train_station_point)) / 1000), 2)
 
-data <- data %>% select(ID, host_id, price_dollars, latitude, longitude, dist_stephansdom_km, dist_schonbrunn_km, dist_train_station_km, neighbourhood, room_type, accommodates, bathrooms, beds, amenities, host_acceptance_rate, host_is_superhost, host_listings_count, number_of_reviews:reviews_per_month)
+data <- data %>% select(ID, host_id, price_dollars, latitude, longitude, dist_stephansdom_km, dist_schonbrunn_km, dist_train_station_km, neighbourhood, room_type, accommodates, bathrooms, beds, amenities, host_acceptance_rate, host_is_superhost, host_listings_count, number_of_reviews, apt_age_days, review_scores_rating:reviews_per_month)
 
 View(data)
