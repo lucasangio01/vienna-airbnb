@@ -1,5 +1,6 @@
 library(dplyr)
 library(tidyverse)
+library(tibble)
 
 
 data <- read.csv("Data/vienna_listings.csv")
@@ -22,5 +23,11 @@ data$host_is_superhost <- as.factor(data$host_is_superhost)
 colnames(data)[colnames(data) == 'price'] <- 'price_dollars'
 colnames(data)[colnames(data) == 'neighbourhood_cleansed'] <- 'neighbourhood'
 
+data$ID <- 1:nrow(data)
+data <- data %>% select(ID, everything())
+data <- data %>% select(-id)
+
 View(data)
 print(colSums(is.na(data)))
+data <- drop_na(data)
+View(data)
