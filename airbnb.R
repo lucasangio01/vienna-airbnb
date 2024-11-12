@@ -31,7 +31,9 @@ data <- data %>% select(-id)
 data <- drop_na(data)
 
 
-#########
+
+################################################################################
+
 
 schonbrunn <- opq("Vienna") %>%
   add_osm_feature(key = "name", value = "Schönbrunn") %>%
@@ -56,11 +58,19 @@ data$dist_schonbrunn <- st_distance(data_sf, schonbrunn_point)
 data$dist_stephansdom <- st_distance(data_sf, stephansdom_point)
 data$dist_train_station <- st_distance(data_sf, train_station_point)
 
+<<<<<<< HEAD
 ########
 
 data$neighbourhood <- gsub("Rudolfsheim-Fnfhaus", "Rudolfsheim-Fünfhaus", data$neighbourhood)
 data$neighbourhood <- gsub("Landstra§e", "Landstraße", data$neighbourhood)
 data$neighbourhood <- gsub("Whring", "Währing", data$neighbourhood)
 data$neighbourhood <- gsub("Dbling", "Döbling", data$neighbourhood)
+=======
+data$dist_schonbrunn_km <- round((as.numeric(st_distance(data_sf, schonbrunn_point)) / 1000), 2)
+data$dist_stephansdom_km <- round((as.numeric(st_distance(data_sf, stephansdom_point)) / 1000), 2)
+data$dist_train_station_km <- round((as.numeric(st_distance(data_sf, train_station_point)) / 1000), 2)
+
+data <- data %>% select(ID, host_id, price_dollars, latitude, longitude, dist_stephansdom_km, dist_schonbrunn_km, dist_train_station_km, neighbourhood, room_type, accommodates, bathrooms, beds, amenities, host_acceptance_rate, host_is_superhost, host_listings_count, number_of_reviews:reviews_per_month)
+>>>>>>> c60ee069a892c5b09a884d7476b2e9601f14e9e5
 
 View(data)
