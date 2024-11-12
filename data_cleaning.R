@@ -68,3 +68,40 @@ data$dist_train_station_km <- round((as.numeric(st_distance(data_sf, train_stati
 data <- data %>% select(ID, host_id, price_dollars, latitude, longitude, dist_stephansdom_km, dist_schonbrunn_km, dist_train_station_km, neighbourhood, room_type, accommodates, bathrooms, beds, amenities, host_acceptance_rate, host_is_superhost, host_listings_count, number_of_reviews, apt_age_days, review_scores_rating:reviews_per_month)
 
 View(data)
+
+# Ameneties Selection Part
+# Step 1: Count specific amenities
+amenities_check <- c(
+  "Cleaning available during stay" = "Cleaning available during stay",
+  "Air Conditioning" = "Portable air conditioning|Air conditioning|Central air conditioning",
+  "Self check-in" = "Self check-in",
+  "Wi-Fi" = "Wi-Fi|Wifi|Wireless internet"
+)
+
+# Calculate the count for each amenity
+results <- sapply(amenities_check, function(pattern) {
+  sum(str_detect(data$amenities, regex(pattern, ignore_case = TRUE)), na.rm = TRUE)
+})
+
+# Convert results to a data frame and display counts
+results_df <- data.frame(Amenity = names(results), Count = as.integer(results))
+print("Amenities Count Summary:")
+print(results_df)
+
+# Step 2: Add new columns to indicate the presence of each amenity
+data$`Cleaning available during stay` <- ifelse(str_detect(data$amenities, regex("Cleaning available during stay", ignore_case = TRUE)), 1, 0)
+data$`Air Conditioning` <- ifelse(str_detect(data$amenities, regex("Portable air conditioning|Air conditioning|Central air conditioning", ignore_case = TRUE)), 1, 0)
+data$`Self check-in` <- ifelse(str_detect(data$amenities, regex("Self check-in", ignore_case = TRUE)), 1, 0)
+data$WiFi <- ifelse(str_detect(data$amenities, regex("Wi-Fi|Wifi|Wireless internet", ignore_case = TRUE)), 1, 0)
+
+# Step 3: Double-check for discrepancies between new columns and amenities text
+discrepancies <- list(
+  Cleaning = nrow(data %>% filter(`Cleaning available during stay` == 0 & str_detect(amenities, regex("Cleaning available during stay", ignore_case = TRUE)))),
+  AirConditioning = nrow(data %>% filter(`Air Conditioning` == 0 & str_detect(amenities, regex("Portable air conditioning|Air conditioning|Central air conditioning", ignore_case = TRUE)))),
+  SelfCheckIn = nrow(data %>% filter(`Self check-in` == 0 & str_detect(amenities, regex("Self check-in", ignore_case = TRUE)))),
+  WiFi = nrow(data %>% filter(WiFi == 0 & str_detect(amenities, regex("Wi-Fi|Wifi|Wireless internet", ignore_case = TRUE))))
+)
+
+# Print discrepancies (if any)
+print("Discrepancies Summary:")
+print(discrepancies)
