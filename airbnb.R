@@ -1,12 +1,13 @@
 library(dplyr)
 library(tidyverse)
 library(tibble)
+library(osmdata)
+library(sf)
 
 
 data <- read.csv("Data/vienna_listings.csv")
 
 data <- data %>% select(id, host_id, host_acceptance_rate, host_is_superhost, host_listings_count, neighbourhood_cleansed, latitude, longitude, room_type, accommodates, bathrooms, beds, amenities, price, number_of_reviews, first_review, review_scores_rating:review_scores_value, reviews_per_month)
-#data <- drop_na(data)
 data <- data %>% select(id, host_id, price, latitude, longitude, neighbourhood_cleansed, room_type, accommodates, bathrooms, beds, amenities, host_acceptance_rate, host_is_superhost, host_listings_count, number_of_reviews:reviews_per_month)
 data <- subset(data, bathrooms > 0)
 
@@ -27,7 +28,32 @@ data$ID <- 1:nrow(data)
 data <- data %>% select(ID, everything())
 data <- data %>% select(-id)
 
-View(data)
-print(colSums(is.na(data)))
 data <- drop_na(data)
+
+
+#########
+
+schonbrunn <- opq("Vienna") %>%
+  add_osm_feature(key = "name", value = "Schönbrunn") %>%
+  osmdata_sf()
+stephansdom <- opq("Vienna") %>%
+  add_osm_feature(key = "name", value = "Stephansdom") %>%
+  osmdata_sf()
+train_station <- opq("Vienna") %>%
+  add_osm_feature(key = "name", value = "Hauptbahnhof") %>%
+  osmdata_sf()
+
+schonbrunn_coords <- st_coordinates(schonbrunn$osm_points)[1, ]
+stephansdom_coords <- st_coordinates(stephansdom$osm_points)[1, ]
+train_station_coords <- st_coordinates(train_station$osm_points)[1, ]
+
+data_sf <- st_as_sf(data, coords = c("longitude", "latitude"), crs = 4326)
+schonbrunn_point <- st_sfc(st_point(schonbrunn_coords), crs = 4326)
+stephansdom_point <- st_sfc(st_point(stephansdom_coords), crs = 4326)
+train_station_point <- st_sfc(st_point(train_station_coords), crs = 4326)
+
+data$dist_schonbrunn <- st_distance(data_sf, schonbrunn_point)
+data$dist_stephansdom <- st_distance(data_sf, stephansdom_point)
+data$dist_train_station <- st_distance(data_sf, train_station_point)
+
 View(data)
