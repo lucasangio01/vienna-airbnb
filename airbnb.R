@@ -56,4 +56,11 @@ data$dist_schonbrunn <- st_distance(data_sf, schonbrunn_point)
 data$dist_stephansdom <- st_distance(data_sf, stephansdom_point)
 data$dist_train_station <- st_distance(data_sf, train_station_point)
 
+########
+
+data$neighbourhood <- gsub("Rudolfsheim-Fnfhaus", "Rudolfsheim-Fünfhaus", data$neighbourhood)
+data$neighbourhood <- gsub("Landstra§e", "Landstraße", data$neighbourhood)
+data$neighbourhood <- gsub("Whring", "Währing", data$neighbourhood)
+data$neighbourhood <- gsub("Dbling", "Döbling", data$neighbourhood)
+
 View(data)
