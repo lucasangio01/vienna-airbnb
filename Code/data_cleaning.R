@@ -66,12 +66,6 @@ data$dist_train_station_km <- round((as.numeric(st_distance(data_sf, train_stati
 
 data <- data %>% select(ID, host_id, price_dollars, latitude, longitude, dist_stephansdom_km, dist_schonbrunn_km, dist_train_station_km, neighbourhood, room_type, accommodates, bathrooms, beds, amenities, host_acceptance_rate, host_listings_count, number_of_reviews, apt_age_days, review_scores_rating:reviews_per_month)
 
-amenities_check <- c(
-  "Cleaning available during stay" = "Cleaning available during stay",
-  "Air Conditioning" = "Portable air conditioning|Air conditioning|Central air conditioning",
-  "Self check-in" = "Self check-in"
-)
-
 data$cleaning_service <- ifelse(str_detect(data$amenities, regex("Cleaning available during stay", ignore_case = TRUE)), 1, 0)
 data$air_conditioning <- ifelse(str_detect(data$amenities, regex("Portable air conditioning|Air conditioning|Central air conditioning", ignore_case = TRUE)), 1, 0)
 data$self_checkin <- ifelse(str_detect(data$amenities, regex("Self check-in", ignore_case = TRUE)), 1, 0)
