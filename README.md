@@ -1,7 +1,7 @@
 # Group project for the exam of Advanced Multivariate Statistics
 
 TOPICS:
-- Exploratory data analysis
+- Exploratory data analysis + create maps
 - Bootstrapping and simulation-based inference
     _Applications: regression_
 - Multilevel models
