@@ -6,9 +6,11 @@ TOPICS:
     _Applications: regression_
 - Multilevel models (**Tommaso**);
   _Applications: regression_
-- Generic computation algorithms (**Idk, we will see**);
+- Generic computation algorithms (**Cihan + Tommaso**);
 - Robust inference (**Luca**);
   _Applications: regression_
 - Model-based clustering (**Honest**);
   _Applications: cluster houses based on neighborhood_
-- Robust clustering (**Tommaso**).
+- Robust clustering (**Honest**).
+
+Research question: can we predict prices based on the characteristics of the house, reviews, etc? Similarities in houses located in the same neighborhood?
