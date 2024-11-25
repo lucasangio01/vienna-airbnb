@@ -2,29 +2,19 @@ library(lme4)
 library(tidyverse)
 library(insight)
 
-data <- read_csv('/Users/tommipremoli8/Desktop/Progetti/ams-exam/Data/vienna_listings_final.csv')
+data <- read_csv('/Users/tommipremoli8/Desktop/Progetti/ams-exam/Data/vienna_listings_no_outliers.csv')
 
-newdata <- data %>% mutate(log_price_dollars = log(price_dollars + 1))
-
-scaled <- data %>%
-  mutate(across(
-    c(dist_stephansdom_km, dist_schonbrunn_km, dist_train_station_km, accommodates, bathrooms, beds,
-      host_acceptance_rate, host_listings_count, number_of_reviews, apt_age_days, review_scores_rating,
-      review_scores_accuracy, review_scores_cleanliness, review_scores_checkin, review_scores_communication,
-      review_scores_location, review_scores_value, reviews_per_month),
-    ~ scale(.)
-  ))
-
+# newdata <- data %>% mutate(log_price_dollars = log(price_dollars + 1))
 
 ggplot(data) +
   geom_point(aes(dist_stephansdom_km, price_dollars, col=neighbourhood))
 
-ggplot(newdata) +
-  geom_point(aes(accommodates, log_price_dollars)) +
+ggplot(data) +
+  geom_point(aes(accommodates, price_dollars)) +
   facet_wrap(~neighbourhood)
 
 ggplot(data) +
-  geom_point(aes(dist_stephansdom_km, price_dollars)) +
+  geom_point(aes(apt_age_days, price_dollars)) +
   facet_wrap(~neighbourhood)
 
 # Standard linear model
@@ -40,9 +30,10 @@ ggplot(data, aes(x = dist_stephansdom_km, y = price_dollars)) +
   geom_point() +
   geom_smooth(method = "lm",se = F)
 
-ggplot(data, aes(x = accommodates, y = price_dollars)) +
-  geom_point() +
-  geom_smooth(method = "lm",se = F)
+ggplot(data, aes(x = accommodates, y = price_dollars, colour = neighbourhood)) +
+  geom_point(alpha = 0.2) +
+  geom_smooth(method = "lm",se = F) +
+  theme_minimal()
 
 ggplot(data, aes(x = dist_schonbrunn_km, y = price_dollars)) +
   geom_point() +
@@ -91,8 +82,14 @@ ranef(fit_lmm_rand_intercept) # Random effect
 lattice::dotplot(ranef(fit_lmm_rand_intercept))
 
 ggplot(data, aes(x = accommodates, y = price_dollars, colour = neighbourhood)) +
-  geom_point(size = 1, alpha = 0.5) +
-  geom_line(data = cbind(data, pred = predict(fit_lmm_rand_intercept)), aes(y = pred), size = 1) 
+  geom_point(size = 1, alpha = 0.2) +
+  geom_line(data = cbind(data, pred = predict(fit_lmm_rand_intercept)), aes(y = pred), size = 1) +
+  theme_minimal()
+
+ggplot(data, aes(x = dist_stephansdom_km, y = price_dollars, colour = neighbourhood)) +
+  geom_point(size = 1, alpha = 0.2) +
+  geom_line(data = cbind(data, pred = predict(fit_lmm_rand_intercept)), aes(y = pred), size = 1) +
+  theme_minimal()
 
 (sigma2_eps <- get_variance_residual(fit_lmm_rand_intercept))
 (sigma2_b <- get_variance_random(fit_lmm_rand_intercept))
@@ -117,7 +114,7 @@ ranef(fit_lmm_rand_int_and_slope)
 lattice::dotplot(ranef(fit_lmm_rand_int_and_slope))
 
 ggplot(data, aes(x = accommodates, y = price_dollars, colour = neighbourhood)) +
-  geom_point(alpha = 0.5) +
+  geom_point(alpha = 0.2) +
   geom_line(data = cbind(data, pred = predict(fit_lmm_rand_int_and_slope)), aes(y = pred), linewidth = 1) +
   labs(
     title = "Relazione tra Distanza da Stephansdom e Prezzo Logaritmico",
@@ -145,8 +142,8 @@ ranef(fit_lmm_rand_slope)
 
 lattice::dotplot(ranef(fit_lmm_rand_slope))
 
-ggplot(data, aes(x = number_of_reviews, y = price_dollars, colour = neighbourhood)) +
-  geom_point(alpha = 0.5) +
+ggplot(data, aes(x = accommodates, y = price_dollars, colour = neighbourhood)) +
+  geom_point(alpha = 0.2) +
   geom_line(data = cbind(data, pred = predict(fit_lmm_rand_slope)), aes(y = pred), size = 1) 
 
 # Prediction
@@ -167,3 +164,44 @@ qqnorm(resid(fit_lmm_rand_int_and_slope))
 qqline(resid(fit_lmm_rand_int_and_slope), col='red', lwd=2)
 
 anova(fit_lmm_rand_int_and_slope, fit_lm) 
+
+
+# Boxplot neighbourhood
+ggplot(data, aes(x = neighbourhood, y = price_dollars)) +
+  geom_boxplot() +
+  theme_bw() + 
+  theme(axis.text.x = element_text(angle=90)) +
+  labs(x = "Neighbourhoods", y = "Price ($)")
+
+
+ggplot(data, aes(accommodates, price_dollars)) +
+  geom_point() +
+  facet_wrap(~ neighbourhood, nrow = 4) +
+  geom_smooth(method = "lm") +
+  theme_bw() +
+  labs(x = "Accommodates", y = "Price ($)") +
+  coord_cartesian(ylim = c(0, 360))
+
+ggplot(data, aes(dist_stephansdom_km, price_dollars)) +
+  geom_point() +
+  facet_wrap(~ neighbourhood, nrow = 4) +
+  geom_smooth(method = "lm") +
+  theme_bw() +
+  labs(x = "dist_stephansdom_km", y = "Price ($)") +
+  coord_cartesian(ylim = c(0, 360))
+
+ggplot(data, aes(dist_schonbrunn_km, price_dollars)) +
+  geom_point() +
+  facet_wrap(~ neighbourhood, nrow = 4) +
+  geom_smooth(method = "lm") +
+  theme_bw() +
+  labs(x = "dist_schonbrunn_km", y = "Price ($)") +
+  coord_cartesian(ylim = c(0, 360))
+
+ggplot(data, aes(review_scores_rating, price_dollars)) +
+  geom_point() +
+  facet_wrap(~ neighbourhood, nrow = 4) +
+  geom_smooth(method = "lm") +
+  theme_bw() +
+  labs(x = "review_scores_rating", y = "Price ($)") +
+  coord_cartesian(ylim = c(0, 360))
