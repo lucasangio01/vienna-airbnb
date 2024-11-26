@@ -4,6 +4,8 @@ library(insight)
 
 data <- read_csv('/Users/tommipremoli8/Desktop/Progetti/ams-exam/Data/vienna_listings_no_outliers.csv')
 
+kgsiwsmp
+
 # newdata <- data %>% mutate(log_price_dollars = log(price_dollars + 1))
 
 ggplot(data) +
