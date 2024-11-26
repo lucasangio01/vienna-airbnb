@@ -31,12 +31,16 @@ ggplot(data, aes(x = dist_stephansdom_km, y = price_dollars)) +
   geom_smooth(method = "lm",se = F)
 
 ggplot(data, aes(x = accommodates, y = price_dollars, colour = neighbourhood)) +
-  geom_point(alpha = 0.2) +
+  geom_point(alpha = 0.1) +
   geom_smooth(method = "lm",se = F) +
   theme_minimal()
 
-ggplot(data, aes(x = dist_schonbrunn_km, y = price_dollars)) +
-  geom_point() +
+ggplot(data, aes(x = review_scores_rating, y = price_dollars, colour = neighbourhood)) +
+  geom_point(alpha = 0.05) +
+  geom_smooth(method = "lm",se = F)
+
+ggplot(data, aes(x = review_scores_location, y = price_dollars, colour = neighbourhood)) +
+  geom_point(alpha = 0.05) +
   geom_smooth(method = "lm",se = F)
 
 # LM with Neighborhood as dummy variables
@@ -77,17 +81,22 @@ fit_lmm_rand_intercept <- lmer(price_dollars ~ dist_stephansdom_km + dist_schonb
 summary(fit_lmm_rand_intercept)
 
 fixef(fit_lmm_rand_intercept) # Fixed effects
-
 ranef(fit_lmm_rand_intercept) # Random effect
+
 lattice::dotplot(ranef(fit_lmm_rand_intercept))
 
 ggplot(data, aes(x = accommodates, y = price_dollars, colour = neighbourhood)) +
-  geom_point(size = 1, alpha = 0.2) +
+  geom_point(size = 1, alpha = 0.02) +
+  geom_line(data = cbind(data, pred = predict(fit_lmm_rand_intercept)), aes(y = pred), size = 1) +
+  theme_minimal()
+
+ggplot(data, aes(x = review_scores_rating, y = price_dollars, colour = neighbourhood)) +
+  geom_point(size = 1, alpha = 0.02) +
   geom_line(data = cbind(data, pred = predict(fit_lmm_rand_intercept)), aes(y = pred), size = 1) +
   theme_minimal()
 
 ggplot(data, aes(x = dist_stephansdom_km, y = price_dollars, colour = neighbourhood)) +
-  geom_point(size = 1, alpha = 0.2) +
+  geom_point(size = 1, alpha = 0.02) +
   geom_line(data = cbind(data, pred = predict(fit_lmm_rand_intercept)), aes(y = pred), size = 1) +
   theme_minimal()
 
@@ -104,7 +113,7 @@ fit_lmm_rand_int_and_slope <- lmer(price_dollars ~ dist_stephansdom_km + dist_sc
                              review_scores_rating + review_scores_accuracy + review_scores_cleanliness +
                              review_scores_checkin + review_scores_communication + review_scores_location +
                              review_scores_value + reviews_per_month + 
-                             (dist_stephansdom_km + dist_schonbrunn_km + accommodates + review_scores_rating | neighbourhood),
+                             (dist_stephansdom_km + accommodates + review_scores_rating | neighbourhood),
                            data = data)
 summary (fit_lmm_rand_int_and_slope)
 
@@ -133,7 +142,7 @@ fit_lmm_rand_slope <- lmer(
     review_scores_rating + review_scores_accuracy + review_scores_cleanliness +
     review_scores_checkin + review_scores_communication + review_scores_location +
     review_scores_value + reviews_per_month +
-    (dist_stephansdom_km + dist_schonbrunn_km + accommodates + review_scores_rating - 1 | neighbourhood),
+    (dist_stephansdom_km + accommodates + review_scores_rating - 1 | neighbourhood),
   data = data
 )
 
@@ -144,7 +153,8 @@ lattice::dotplot(ranef(fit_lmm_rand_slope))
 
 ggplot(data, aes(x = accommodates, y = price_dollars, colour = neighbourhood)) +
   geom_point(alpha = 0.2) +
-  geom_line(data = cbind(data, pred = predict(fit_lmm_rand_slope)), aes(y = pred), size = 1) 
+  geom_line(data = cbind(data, pred = predict(fit_lmm_rand_slope)), aes(y = pred), size = 1) +
+  theme_minimal()
 
 # Prediction
 hat_y_lm <- predict(fit_lm) 
@@ -171,7 +181,8 @@ ggplot(data, aes(x = neighbourhood, y = price_dollars)) +
   geom_boxplot() +
   theme_bw() + 
   theme(axis.text.x = element_text(angle=90)) +
-  labs(x = "Neighbourhoods", y = "Price ($)")
+  labs(x = "Neighbourhoods", y = "Price ($)") +
+  theme_minimal()
 
 
 ggplot(data, aes(accommodates, price_dollars)) +
@@ -185,7 +196,7 @@ ggplot(data, aes(accommodates, price_dollars)) +
 ggplot(data, aes(dist_stephansdom_km, price_dollars)) +
   geom_point() +
   facet_wrap(~ neighbourhood, nrow = 4) +
-  geom_smooth(method = "lm") +
+  geom_smooth(method = 'lm') +
   theme_bw() +
   labs(x = "dist_stephansdom_km", y = "Price ($)") +
   coord_cartesian(ylim = c(0, 360))
