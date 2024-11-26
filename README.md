@@ -14,3 +14,11 @@ TOPICS:
 - Robust clustering (**Honest**).
 
 Research question: can we predict prices based on the characteristics of the house, reviews, etc? Similarities in houses located in the same neighborhood?
+
+
+# Presentation (2nd December)
+- Presentation of data and variables - outliers and correlation (Luca)
+- Bootstrap (Cihan)
+- Robust inference (Luca)
+- Multilevels (Tommi)
+- Robust clustering and Model-based clustering (Honest)
