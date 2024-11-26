@@ -10,14 +10,14 @@ library(corrplot)
 data <- read_csv("./data/vienna_listings_final.csv")
 
 numeric_variables <- data %>%
-  select("price_dollars":"dist_train_station_km", "accommodates":"reviews_per_month")
+  dplyr::select("price_dollars":"dist_train_station_km", "accomodates":"reviews_per_month")
 
 reviews <- data %>%
-  select("review_scores_rating":"review_scores_value") %>%
+  dplyr::select("review_scores_rating":"review_scores_value") %>%
   pivot_longer(cols = everything(), names_to = "variable", values_to = "value")
 
 others <- data %>%
-  select("price_dollars", "number_of_reviews") %>%
+  dplyr::select("price_dollars", "number_of_reviews") %>%
   pivot_longer(cols = everything(), names_to = "variable", values_to = "value")
 
 correlations <- corrplot(cor(numeric_variables), method = "circle", type = "upper")
