@@ -5,7 +5,7 @@ library(sf)
 library(MASS) 
 
 
-data_original <- read_csv("/Users/tommipremoli8/Desktop/Progetti/ams-exam/data/vienna_listings.csv")
+data_original <- read_csv("./data/vienna_listings.csv")
 
 data <- data_original %>% dplyr::select(id, host_id, host_acceptance_rate, host_listings_count, neighbourhood_cleansed, latitude, longitude, room_type, accommodates, bathrooms, beds, amenities, price, number_of_reviews, first_review, review_scores_rating:review_scores_value, reviews_per_month)
 data <- data %>% dplyr::select(id, host_id, price, latitude, longitude, neighbourhood_cleansed, room_type, accommodates, bathrooms, beds, amenities, host_acceptance_rate, host_listings_count, number_of_reviews:review_scores_rating, reviews_per_month)
@@ -82,10 +82,11 @@ data <- data %>% dplyr::select(ID, host_id, price_dollars, latitude, longitude, 
 View(data)
 
 
-#write.csv(data, "C:/Users/sangi/Documents/GitHub/ams-exam//data/vienna_listings_with_outliers.csv", row.names = FALSE)
+#write.csv(data, "./data/vienna_listings_with_outliers.csv", row.names = FALSE)
 
 
 ###################### REMOVE OUTLIERS #########################################
+
 
 linear_model <- lm(data = data, formula = price_dollars ~ .)
 
@@ -111,4 +112,4 @@ data_no_outliers <- data[-all_outliers, ]
 
 View(data_no_outliers)
 
-#write.csv(data_no_outliers, ".//data/vienna_listings_no_outliers.csv", row.names = FALSE)
+#write.csv(data_no_outliers, "./data/vienna_listings_no_outliers.csv", row.names = FALSE)
