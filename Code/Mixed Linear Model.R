@@ -15,38 +15,25 @@ pal <- c(
   "#756bb1", "#dadaeb", "#fdae6b"
 )
 
-
-ggplot(data) +
-  geom_point(aes(accommodates, price_dollars)) +
-  facet_wrap(~neighbourhood)
-
-ggplot(data) +
-  geom_point(aes(apt_age_days, price_dollars)) +
-  facet_wrap(~neighbourhood)
-
 # Standard linear model
 fit_lm <- lm(price_dollars ~ dist_stephansdom_km + dist_schonbrunn_km + dist_train_station_km + room_type + 
-               accommodates + bathrooms + cleaning_service + air_conditioning + self_checkin + host_acceptance_rate + 
+               accomodates + bathrooms + cleaning_service + air_conditioning + self_checkin + host_acceptance_rate + 
                host_listings_count + number_of_reviews + apt_age_days + review_scores_rating + reviews_per_month, 
              data = data)
 summary(fit_lm)
 
 ggplot(data, aes(x = dist_stephansdom_km, y = price_dollars)) +
-  geom_point() +
-  geom_smooth(method = "lm",se = F)
+  geom_point(alpha = 0.5) +
+  geom_smooth(method = "lm",se = F) + 
+  theme_minimal()
 
-ggplot(data, aes(x = accommodates, y = price_dollars, colour = neighbourhood)) +
+ggplot(data, aes(x = accomodates, y = price_dollars, colour = neighbourhood)) +
   geom_point(alpha = 0.05) +
   geom_smooth(method = "lm",se = F) +
   theme_minimal()
 
-ggplot(data, aes(x = review_scores_rating, y = price_dollars, colour = neighbourhood)) +
-  geom_point(alpha = 0.05, size = 0.8) +
-  geom_smooth(method = "lm",se = F) +
-  theme_minimal()
-
-ggplot(data, aes(x = review_scores_location, y = price_dollars, colour = neighbourhood)) +
-  geom_point(alpha = 0.05, size = 1) +
+ggplot(data, aes(x = dist_stephansdom_km, y = price_dollars, colour = neighbourhood)) +
+  geom_point(alpha = 0.2, size = 1) +
   geom_smooth(method = "lm",se = F) +
   theme_minimal()
 
@@ -54,7 +41,7 @@ ggplot(data, aes(x = review_scores_location, y = price_dollars, colour = neighbo
 fit_lm_no_pooling <- lm(
   price_dollars ~ 
     (dist_stephansdom_km + dist_schonbrunn_km + dist_train_station_km +
-       room_type + accommodates + bathrooms + cleaning_service +
+       room_type + accomodates + bathrooms + cleaning_service +
        air_conditioning + self_checkin + host_acceptance_rate +
        host_listings_count + number_of_reviews + apt_age_days +
        review_scores_rating + reviews_per_month) * neighbourhood,
@@ -63,11 +50,11 @@ fit_lm_no_pooling <- lm(
 
 summary(fit_lm_no_pooling)
 
-ggplot(data, aes(x = accommodates, y = price_dollars, colour = neighbourhood)) +
+ggplot(data, aes(x = accomodates, y = price_dollars, colour = neighbourhood)) +
   geom_point(size = 1, alpha = 0.05) +
   geom_smooth(method = "lm",se = F) +
   labs(
-    title = "Relationship between Number of Accommodates and Price",
+    title = "Relationship between Number of accomodates and Price",
     x = "Accomodates",
     y = "Price (Dollars)",
     colour = "Neighbourhood"
@@ -76,7 +63,7 @@ ggplot(data, aes(x = accommodates, y = price_dollars, colour = neighbourhood)) +
 
 # Random Intercept model
 fit_lmm_rand_intercept <- lmer(price_dollars ~ dist_stephansdom_km + dist_schonbrunn_km + dist_train_station_km +
-                                 room_type + accommodates + bathrooms + cleaning_service +
+                                 room_type + accomodates + bathrooms + cleaning_service +
                                  air_conditioning + self_checkin + host_acceptance_rate +
                                  host_listings_count + number_of_reviews + apt_age_days +
                                  review_scores_rating + reviews_per_month + (1 | neighbourhood), data = data)
@@ -88,14 +75,13 @@ ranef(fit_lmm_rand_intercept)
 
 lattice::dotplot(ranef(fit_lmm_rand_intercept))
 
-
 plot_model(
-  fit_lmm_rand_intercept, type = "pred", terms = c("accommodates", "neighbourhood"),
+  fit_lmm_rand_intercept, type = "pred", terms = c("accomodates", "neighbourhood"),
   pred.type = "re", ci.lvl = NA) +                       
   scale_color_manual(values = pal) +   
   labs(
-    title = "Prediction of the Effect of Accommodates on Prices.",
-    x = "Accommodates",
+    title = "Prediction of the Effect of accomodates on Prices.",
+    x = "accomodates",
     y = "Price (Dollars)",
     colour = "Neighbourhood"
   ) +
@@ -106,7 +92,7 @@ plot_model(
   pred.type = "re", ci.lvl = NA) +                       
   scale_color_manual(values = pal) +   
   labs(
-    title = "Prediction of the Effect of Accommodates on Prices.",
+    title = "Prediction of the Effect of accomodates on Prices.",
     x = "Review Scores Rating",
     y = "Price (Dollars)",
     colour = "Neighbourhood"
@@ -118,7 +104,7 @@ plot_model(
   pred.type = "re", ci.lvl = NA) +                       
   scale_color_manual(values = pal) +   
   labs(
-    title = "Prediction of the Effect of Accommodates on Prices.",
+    title = "Prediction of the Effect of accomodates on Prices.",
     x = "Distance from Stephansdom (km)",
     y = "Price (Dollars)",
     colour = "Neighbourhood"
@@ -132,11 +118,11 @@ plot_model(
 
 # Random Intercept and slopes model
 fit_lmm_rand_int_and_slope <- lmer(price_dollars ~ dist_stephansdom_km + dist_schonbrunn_km + dist_train_station_km +
-                             room_type + accommodates + bathrooms + cleaning_service +
+                             room_type + accomodates + bathrooms + cleaning_service +
                              air_conditioning + self_checkin + host_acceptance_rate +
                              host_listings_count + number_of_reviews + apt_age_days +
                              review_scores_rating + reviews_per_month + 
-                             (dist_stephansdom_km + accommodates + review_scores_rating | neighbourhood),
+                             (dist_stephansdom_km + room_type + review_scores_rating | neighbourhood),
                            data = data)
 summary (fit_lmm_rand_int_and_slope)
 
@@ -146,21 +132,15 @@ ranef(fit_lmm_rand_int_and_slope)
 lattice::dotplot(ranef(fit_lmm_rand_int_and_slope))
 
 plot_model(
-  fit_lmm_rand_int_and_slope, type = "pred", terms = c("accommodates", "neighbourhood"),
+  fit_lmm_rand_int_and_slope, type = "pred", terms = c("accomodates", "neighbourhood"),
   pred.type = "re", ci.lvl = NA) +                       
   scale_color_manual(values = pal) +   
   labs(
-    title = "Prediction of the Effect of Accommodates on Prices.",
-    x = "Accommodates",
+    title = "Prediction of the Effect of accomodates on Prices.",
+    x = "accomodates",
     y = "Price (Dollars)",
     colour = "Neighbourhood"
   ) +
-  theme_minimal()
-
-ggplot(data, aes(x = accommodates, y = price_dollars, colour = neighbourhood)) +
-  geom_point(alpha = 0.2) +
-  geom_line(data = cbind(data, pred = predict(fit_lmm_rand_int_and_slope)), aes(y = pred), linewidth = 1) +
-  scale_color_manual(values = pal) +
   theme_minimal()
 
 plot_model(
@@ -168,17 +148,11 @@ plot_model(
   pred.type = "re", ci.lvl = NA) +                       
   scale_color_manual(values = pal) +   
   labs(
-    title = "Prediction of the Effect of Accommodates on Prices.",
+    title = "Prediction of the Effect of accomodates on Prices.",
     x = "Review Scores Rating",
     y = "Price (Dollars)",
     colour = "Neighbourhood"
   ) +
-  theme_minimal()
-
-ggplot(data, aes(x = review_scores_rating, y = price_dollars, colour = neighbourhood)) +
-  geom_point(alpha = 0.2) +
-  geom_line(data = cbind(data, pred = predict(fit_lmm_rand_int_and_slope)), aes(y = pred), linewidth = 1) +
-  scale_color_manual(values = pal) +
   theme_minimal()
 
 plot_model(
@@ -186,27 +160,21 @@ plot_model(
   pred.type = "re", ci.lvl = NA) +                       
   scale_color_manual(values = pal) +   
   labs(
-    title = "Prediction of the Effect of Accommodates on Prices.",
+    title = "Prediction of the Effect of accomodates on Prices.",
     x = "Distance from Stephansdom (km)",
     y = "Price (Dollars)",
     colour = "Neighbourhood"
   ) +
   theme_minimal()
 
-ggplot(data, aes(x = host_acceptance_rate, y = price_dollars, colour = neighbourhood)) +
-  geom_point(alpha = 0.2) +
-  geom_line(data = cbind(data, pred = predict(fit_lmm_rand_int_and_slope)), aes(y = pred), linewidth = 1) +
-  scale_color_manual(values = pal) +
-  theme_minimal()
-
 # Random Slopes model
 fit_lmm_rand_slope <- lmer(
   price_dollars ~ dist_stephansdom_km + dist_schonbrunn_km + dist_train_station_km +
-    room_type + accommodates + bathrooms + cleaning_service +
+    room_type + accomodates + bathrooms + cleaning_service +
     air_conditioning + self_checkin + host_acceptance_rate +
     host_listings_count + number_of_reviews + apt_age_days +
     review_scores_rating + reviews_per_month +
-    (dist_stephansdom_km + accommodates + review_scores_rating - 1 | neighbourhood),
+    (dist_stephansdom_km + room_type + review_scores_rating - 1 | neighbourhood),
   data = data
 )
 
@@ -216,20 +184,15 @@ ranef(fit_lmm_rand_slope)
 lattice::dotplot(ranef(fit_lmm_rand_slope))
 
 plot_model(
-  fit_lmm_rand_slope, type = "pred", terms = c("accommodates", "neighbourhood"),
+  fit_lmm_rand_slope, type = "pred", terms = c("accomodates", "neighbourhood"),
   pred.type = "re", ci.lvl = NA) +                       
   scale_color_manual(values = pal) +   
   labs(
-    title = "Prediction of the Effect of Accommodates on Prices.",
-    x = "Accommodates",
+    title = "Prediction of the Effect of accomodates on Prices.",
+    x = "accomodates",
     y = "Price (Dollars)",
     colour = "Neighbourhood"
   ) +
-  theme_minimal()
-
-ggplot(data, aes(x = accommodates, y = price_dollars, colour = neighbourhood)) +
-  geom_point(alpha = 0.2) +
-  geom_line(data = cbind(data, pred = predict(fit_lmm_rand_slope)), aes(y = pred), size = 1) +
   theme_minimal()
 
 plot_model(
@@ -237,7 +200,7 @@ plot_model(
   pred.type = "re", ci.lvl = NA) +                       
   scale_color_manual(values = pal) +   
   labs(
-    title = "Prediction of the Effect of Accommodates on Prices.",
+    title = "Prediction of the Effect of accomodates on Prices.",
     x = "Review Scores Rating",
     y = "Price (Dollars)",
     colour = "Neighbourhood"
@@ -255,21 +218,14 @@ yardstick::rmse_vec(truth = data$price_dollars,estimate = hat_y_lm)
 yardstick::rmse_vec(truth = data$price_dollars,estimate = hat_y_mem) # Random Intercept and slopes model
 yardstick::rmse_vec(truth = data$price_dollars,estimate = hat_y_LMnopooling) # LM with Neighborhood as dummy variables
 yardstick::rmse_vec(truth = data$price_dollars,estimate = hat_y_intmod) # Random Intercept model
-yardstick::rmse_vec(truth = data$price_dollars,estimate = hat_y_slomod)# Random Slopes model
+yardstick::rmse_vec(truth = data$price_dollars,estimate = hat_y_slomod) # Random Slopes model
 
 plot(fit_lmm_rand_int_and_slope)
 qqnorm(resid(fit_lmm_rand_int_and_slope))
 qqline(resid(fit_lmm_rand_int_and_slope), col='red', lwd=2)
 
-plot(fit_lmm_rand_intercept)
-qqnorm(resid(fit_lmm_rand_intercept))
-qqline(resid(fit_lmm_rand_intercept), col='red', lwd=2)
-
-plot(fit_lmm_rand_slope)
-qqnorm(resid(fit_lmm_rand_slope))
-qqline(resid(fit_lmm_rand_slope), col='red', lwd=2)
-
-anova(fit_lmm_rand_int_and_slope, fit_lm) 
+anova(fit_lmm_rand_int_and_slope, fit_lm)
+anova(fit_lmm_rand_int_and_slope, fit_lmm_rand_intercept) 
 
 
 # Boxplot neighbourhood
@@ -280,15 +236,6 @@ ggplot(data, aes(x = neighbourhood, y = price_dollars)) +
   labs(x = "Neighbourhoods", y = "Price ($)") +
   theme_minimal()
 
-
-ggplot(data, aes(accommodates, price_dollars)) +
-  geom_point() +
-  facet_wrap(~ neighbourhood, nrow = 4) +
-  geom_smooth(method = "lm") +
-  theme_bw() +
-  labs(x = "Accommodates", y = "Price ($)") +
-  coord_cartesian(ylim = c(0, 360))
-
 ggplot(data, aes(dist_stephansdom_km, price_dollars)) +
   geom_point() +
   facet_wrap(~ neighbourhood, nrow = 4) +
@@ -296,32 +243,6 @@ ggplot(data, aes(dist_stephansdom_km, price_dollars)) +
   theme_bw() +
   labs(x = "dist_stephansdom_km", y = "Price ($)") +
   coord_cartesian(ylim = c(0, 360))
-
-ggplot(data, aes(dist_schonbrunn_km, price_dollars)) +
-  geom_point() +
-  facet_wrap(~ neighbourhood, nrow = 4) +
-  geom_smooth(method = "lm") +
-  theme_bw() +
-  labs(x = "dist_schonbrunn_km", y = "Price ($)") +
-  coord_cartesian(ylim = c(0, 360))
-
-ggplot(data, aes(review_scores_rating, price_dollars)) +
-  geom_point() +
-  facet_wrap(~ neighbourhood, nrow = 4) +
-  geom_smooth(method = "lm") +
-  theme_bw() +
-  labs(x = "review_scores_rating", y = "Price ($)") +
-  coord_cartesian(ylim = c(0, 360))
-
-ggplot(data, aes(accommodates, price_dollars)) +
-  geom_point(size = 0.2) +
-  geom_line(aes(y = predict(fit_lmm_rand_int_and_slope), 
-  group = neighbourhood, 
-  color = neighbourhood)) +
-  labs(x = "accommodates",
-  y = "price_dollars") + 
-  theme_minimal()
-
 
 ### Map visualization
 ## Random Intercept Model
@@ -345,23 +266,22 @@ ggplot(vienna_shapefile) +
 ## Random Intercept and Slope Model
 ranefs_int_slo_mod <- data.frame(
   neighbourhood = c("Alsergrund", "Brigittenau", "Döbling", "Donaustadt", "Favoriten", 
-                    "Floridsdorf", "Hernals", "Hietzing", "Innere Stadt", "Josefstadt", 
-                    "Landstraße", "Leopoldstadt", "Liesing", "Margareten", "Mariahilf", 
+                    "Floridsdorf", "Hernals", "Innere Stadt", "Josefstadt", 
+                    "Landstraße", "Leopoldstadt", "Margareten", "Mariahilf", 
                     "Meidling", "Neubau", "Ottakring", "Penzing", "Rudolfsheim-Fünfhaus", 
                     "Simmering", "Währing", "Wieden"),
-  # Intercept, slope for dist_stephansdom_km, accommodates, review_scores_rating
-  ranef_intercept = c(61.791, 15.131, -9.866, -6.233, -15.385, -7.015, -41.111, -10.780, 
-                      14.163, 40.483, -11.093, -22.556, -17.188, -7.553, 24.102, -7.138, 
-                      39.957, -10.464, -15.826, -4.690, -12.467, -15.555, 19.292),
-  ranef_dist_stephansdom_km = c(-24.291, -3.357, 3.794, 2.486, 7.539, 6.525, 11.510, 6.744, 
-                                -12.879, -13.741, 2.248, 8.142, 6.700, 3.148, -14.927, 6.331, 
-                                -17.271, 5.943, 9.765, 5.074, 5.499, 6.616, -11.597),
-  ranef_accommodates = c(2.553, 1.236, 1.005, 1.085, -2.108, -0.413, 1.119, -2.647, 4.654, 
-                         1.182, -0.164, -0.284, -0.271, -1.277, 1.894, -0.0003, 1.885, 
-                         -1.096, -3.821, -1.019, -2.674, -1.683, 0.842),
-  ranef_review_scores_rating = c(-4.354, -4.326, -0.353, 2.888, 0.195, -3.667, -0.305, 2.235, 
-                                 4.681, -1.816, 2.609, 0.600, 0.673, 0.326, 4.150, -2.355, 
-                                 1.259, -2.401, -1.398, -1.844, 2.102, -0.730, 1.829)
+  ranef_intercept = c(47.683, 21.443, -21.181, -13.044, -7.476, -7.795, -35.303, 32.675, 
+                      28.335, -4.039, -21.914, -19.002, 23.419, -10.769, 39.877, -5.377, 
+                      -18.888, 14.502, -27.065, -22.429, 6.348),
+  ranef_dist_stephansdom_km = c(-15.328, -2.677, 8.990, 6.093, 6.586, 6.854, 12.650, -16.825, 
+                                -11.826, 0.517, 7.816, 3.550, -15.974, 7.373, -17.100, 6.840, 
+                                10.144, 6.317, 1.138, 5.976, -11.114),
+  ranef_room_typePrivate_room = c(-2.944, 0.375, -0.093, 3.764, 2.466, -0.295, -1.955, 5.017, 
+                                  -1.192, 0.354, 0.108, -4.276, -2.002, 3.323, 0.276, 2.069, 
+                                  2.467, 10.816, -5.145, -4.147, -8.986),
+  ranef_review_scores_rating = c(-3.394, -5.020, -1.376, 0.390, -2.783, -4.241, -0.766, 7.435, 
+                                 1.014, 1.133, 0.186, 1.387, 6.675, -1.963, 2.816, -4.005, 
+                                 -2.190, -6.689, 6.413, 0.242, 4.735)
 )
 
 vienna_shapefile <- left_join(vienna_shapefile, ranefs_data, by = c("NAMEK" = "neighbourhood"))

@@ -2,6 +2,7 @@ library(tidyverse)
 library(tibble)
 library(osmdata)
 library(sf)
+library(MASS) 
 
 
 data_original <- read_csv("./data/vienna_listings.csv")
@@ -84,7 +85,6 @@ View(data)
 
 
 ###################### REMOVE OUTLIERS #########################################
-
 
 linear_model <- lm(data = data, formula = price_dollars ~ .)
 
