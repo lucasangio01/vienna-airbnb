@@ -77,38 +77,38 @@ data$cleaning_service <- as.factor(data$cleaning_service)
 data$air_conditioning <- as.factor(data$air_conditioning)
 data$self_checkin <- as.factor(data$self_checkin)
 
-data <- data %>% dplyr::select(ID, host_id, price_dollars, latitude, longitude, dist_stephansdom_km, dist_schonbrunn_km, dist_train_station_km, neighbourhood, room_type, accomodates, bathrooms, beds, cleaning_service, air_conditioning, self_checkin, host_acceptance_rate, host_listings_count, number_of_reviews, apt_age_days, review_scores_rating:reviews_per_month)
+data_with_outliers <- data %>% dplyr::select(ID, host_id, price_dollars, latitude, longitude, dist_stephansdom_km, dist_schonbrunn_km, dist_train_station_km, neighbourhood, room_type, accomodates, bathrooms, beds, cleaning_service, air_conditioning, self_checkin, host_acceptance_rate, host_listings_count, number_of_reviews, apt_age_days, review_scores_rating:reviews_per_month)
 
-View(data)
+View(data_with_outliers)
 
 
-#write.csv(data, "./data/vienna_listings_with_outliers.csv", row.names = FALSE)
+#write.csv(data_with_outliers, "./data/vienna_listings_with_outliers.csv", row.names = FALSE)
 
 
 ###################### REMOVE OUTLIERS #########################################
 
 
-linear_model <- lm(data = data, formula = price_dollars ~ .)
+linear_model <- lm(data = data_with_outliers, formula = price_dollars ~ .)
 
 cooks_distance <- cooks.distance(linear_model)
 abs_std_res <- abs(stdres(linear_model))
-threshold_cook <- 4 / nrow(data)
+threshold_cook <- 4 / nrow(data_with_outliers)
 residual_threshold <- 2
 leverage_values <- hatvalues(linear_model)
-predictors <- setdiff(names(data), "price_dollars")
+predictors <- setdiff(names(data_with_outliers), "price_dollars")
 studentized_residuals <- rstudent(linear_model)
-z_scores <- (data$price_dollars - mean(data$price_dollars)) / sd(data$price_dollars)
+z_scores <- (data_with_outliers$price_dollars - mean(data_with_outliers$price_dollars)) / sd(data_with_outliers$price_dollars)
 
 outliers_manual_rows <- c(4374, 4375, 4376, 4573, 7159, 8580)
 outliers_cook <- which(cooks_distance > threshold_cook)
 outliers_residual <- which(abs_std_res > residual_threshold)
-outliers_leverage <- which(leverage_values > (2 * length(coefficients(linear_model)) / nrow(data)))
+outliers_leverage <- which(leverage_values > (2 * length(coefficients(linear_model)) / nrow(data_with_outliers)))
 outliers_studres <- which(abs(studentized_residuals) > 3)
 outliers_z_score <- which(abs(z_scores) > 3)
 
 all_outliers <- union(outliers_manual_rows, union(outliers_cook, union(outliers_residual, union(outliers_leverage, union(outliers_z_score, outliers_studres)))))
 
-data_no_outliers <- data[-all_outliers, ]
+data_no_outliers <- data_with_outliers[-all_outliers, ]
 
 View(data_no_outliers)
 
