@@ -5,7 +5,7 @@ library(sjPlot)
 library(sf)
 library(tmap)
 
-data <- read_csv('/Users/tommipremoli8/Desktop/Progetti/ams-exam/data/vienna_listings_no_outliers.csv')
+data <- read_csv('../data/vienna_listings_no_outliers.csv')
 
 pal <- c(
   "#1f77b4", "#ff7f0e", "#2ca02c", "#bcbd22", "#9467bd", 
@@ -246,7 +246,7 @@ ggplot(data, aes(dist_stephansdom_km, price_dollars)) +
 
 ### Map visualization
 ## Random Intercept Model
-vienna_shapefile <- st_read("/Users/tommipremoli8/Desktop/Data Science for Economics/Materie/2nd Year/Advanced Multivariate Statistics/BEZIRKSGRENZEOGD/BEZIRKSGRENZEOGDPolygon.shp")
+vienna_shapefile <- st_read("../data/Vienna_Districts Shape/BEZIRKSGRENZEOGDPolygon.shp")
 vienna_shapefile$NAMEK <- iconv(vienna_shapefile$NAMEK, from = "latin1", to = "UTF-8")
 
 ranefs <- ranef(fit_lmm_rand_intercept)$neighbourhood
