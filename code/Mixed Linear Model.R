@@ -5,7 +5,7 @@ library(sjPlot)
 library(sf)
 library(tmap)
 
-data <- read_csv('/Users/tommipremoli8/Desktop/Progetti/ams-exam/Data/vienna_listings_no_outliers.csv')
+data <- read_csv('/Users/tommipremoli8/Desktop/Progetti/ams-exam/data/vienna_listings_no_outliers.csv')
 
 pal <- c(
   "#1f77b4", "#ff7f0e", "#2ca02c", "#bcbd22", "#9467bd", 
@@ -116,7 +116,7 @@ plot_model(
 (PVRE <- sigma2_b/(sigma2_b+sigma2_eps))
 
 
-# Random Intercept and slopes model
+# Random Intercept and Slopes Model
 fit_lmm_rand_int_and_slope <- lmer(price_dollars ~ dist_stephansdom_km + dist_schonbrunn_km + dist_train_station_km +
                              room_type + accomodates + bathrooms + cleaning_service +
                              air_conditioning + self_checkin + host_acceptance_rate +
@@ -241,7 +241,7 @@ ggplot(data, aes(dist_stephansdom_km, price_dollars)) +
   facet_wrap(~ neighbourhood, nrow = 4) +
   geom_smooth(method = 'lm') +
   theme_bw() +
-  labs(x = "dist_stephansdom_km", y = "Price ($)") +
+  labs(x = "Distance from Stephansdom (km)", y = "Price ($)") +
   coord_cartesian(ylim = c(0, 360))
 
 ### Map visualization
@@ -257,11 +257,13 @@ vienna_shapefile <- vienna_shapefile %>%
 
 ggplot(vienna_shapefile) +
   geom_sf(aes(fill = ranef_value)) +  
-  scale_fill_viridis_c(option = "inferno", direction = -1) +            
+  scale_fill_viridis_c(option = "inferno", direction = -1, na.value = "white") +            
   theme_minimal() +                   
   labs(title = "Map of Vienna Districts with Random Effects",
        subtitle = "Random Intercept Model",
-       fill = "Random Effect")
+       fill = "Random Effect") +
+  geom_sf_text(aes(label = NAMEK), size = 3, color = "white", 
+               check_overlap = TRUE, nudge_y = 0.5, nudge_x = 0.5) 
 
 ## Random Intercept and Slope Model
 ranefs_int_slo_mod <- data.frame(
@@ -269,33 +271,35 @@ ranefs_int_slo_mod <- data.frame(
                     "Floridsdorf", "Hernals", "Innere Stadt", "Josefstadt", 
                     "Landstraße", "Leopoldstadt", "Margareten", "Mariahilf", 
                     "Meidling", "Neubau", "Ottakring", "Penzing", "Rudolfsheim-Fünfhaus", 
-                    "Simmering", "Währing", "Wieden"),
+                    "Simmering", "Währing", "Wieden", "Hietzing", "Liesing"),
   ranef_intercept = c(47.683, 21.443, -21.181, -13.044, -7.476, -7.795, -35.303, 32.675, 
                       28.335, -4.039, -21.914, -19.002, 23.419, -10.769, 39.877, -5.377, 
-                      -18.888, 14.502, -27.065, -22.429, 6.348),
+                      -18.888, 14.502, -27.065, -22.429, 6.348, NA, NA), 
   ranef_dist_stephansdom_km = c(-15.328, -2.677, 8.990, 6.093, 6.586, 6.854, 12.650, -16.825, 
                                 -11.826, 0.517, 7.816, 3.550, -15.974, 7.373, -17.100, 6.840, 
-                                10.144, 6.317, 1.138, 5.976, -11.114),
+                                10.144, 6.317, 1.138, 5.976, -11.114, NA, NA), 
   ranef_room_typePrivate_room = c(-2.944, 0.375, -0.093, 3.764, 2.466, -0.295, -1.955, 5.017, 
                                   -1.192, 0.354, 0.108, -4.276, -2.002, 3.323, 0.276, 2.069, 
-                                  2.467, 10.816, -5.145, -4.147, -8.986),
+                                  2.467, 10.816, -5.145, -4.147, -8.986, NA, NA),
   ranef_review_scores_rating = c(-3.394, -5.020, -1.376, 0.390, -2.783, -4.241, -0.766, 7.435, 
                                  1.014, 1.133, 0.186, 1.387, 6.675, -1.963, 2.816, -4.005, 
-                                 -2.190, -6.689, 6.413, 0.242, 4.735)
+                                 -2.190, -6.689, 6.413, 0.242, 4.735, NA, NA)
 )
 
-vienna_shapefile <- left_join(vienna_shapefile, ranefs_data, by = c("NAMEK" = "neighbourhood"))
+vienna_shapefile <- left_join(vienna_shapefile, ranefs_int_slo_mod, by = c("NAMEK" = "neighbourhood"))
 
-ranefs_long <- ranefs_data %>%
+ranefs_long <- ranefs_int_slo_mod %>%
   gather(key = "effect", value = "value", -neighbourhood)
 
 vienna_shapefile_long <- left_join(vienna_shapefile, ranefs_long, by = c("NAMEK" = "neighbourhood"))
 
 ggplot(vienna_shapefile_long) +
   geom_sf(aes(fill = value)) + 
-  scale_fill_viridis_c(option = "inferno", direction = -1) +     
+  scale_fill_viridis_c(option = "inferno", direction = -1, na.value = "white") +     
   theme_minimal() + 
   facet_wrap(~effect) +         
   labs(title = "Random Effects Map of Vienna Districts",
        subtitle = "Random Intercept and Slope Model",
-       fill = "Random Effect")
+       fill = "Random Effect") +
+  geom_sf_text(aes(label = NAMEK), size = 3, color = "white", 
+               check_overlap = TRUE, nudge_y = 0.5, nudge_x = 0.5) 
