@@ -7,8 +7,8 @@ library(MASS)
 
 data_original <- read_csv("./data/vienna_listings.csv")
 
-data <- data_original %>% dplyr::select(id, host_id, host_acceptance_rate, host_listings_count, neighbourhood_cleansed, latitude, longitude, room_type, accommodates, bathrooms, beds, amenities, price, number_of_reviews, first_review, review_scores_rating:review_scores_value, reviews_per_month)
-data <- data %>% dplyr::select(id, host_id, price, latitude, longitude, neighbourhood_cleansed, room_type, accommodates, bathrooms, beds, amenities, host_acceptance_rate, host_listings_count, number_of_reviews:review_scores_rating, reviews_per_month)
+data <- data_original %>% dplyr::select(id, host_id, host_acceptance_rate, host_listings_count, neighbourhood_cleansed, latitude, longitude, room_type, accommodates, bathrooms, amenities, price, number_of_reviews, first_review, review_scores_rating:review_scores_value, reviews_per_month)
+data <- data %>% dplyr::select(id, host_id, price, latitude, longitude, neighbourhood_cleansed, room_type, accommodates, bathrooms, amenities, host_acceptance_rate, host_listings_count, number_of_reviews:review_scores_rating, reviews_per_month)
 data <- subset(data, bathrooms > 0)
 
 colnames(data)[colnames(data) == 'price'] <- 'price_dollars'
@@ -67,7 +67,7 @@ data$dist_schonbrunn_km <- round((as.numeric(st_distance(data_sf, schonbrunn_poi
 data$dist_stephansdom_km <- round((as.numeric(st_distance(data_sf, stephansdom_point)) / 1000), 2)
 data$dist_train_station_km <- round((as.numeric(st_distance(data_sf, train_station_point)) / 1000), 2)
 
-data <- data %>% dplyr::select(ID, host_id, price_dollars, latitude, longitude, dist_stephansdom_km, dist_schonbrunn_km, dist_train_station_km, neighbourhood, room_type, accomodates, bathrooms, beds, amenities, host_acceptance_rate, host_listings_count, number_of_reviews, apt_age_days, review_scores_rating:reviews_per_month)
+data <- data %>% dplyr::select(ID, host_id, price_dollars, latitude, longitude, dist_stephansdom_km, dist_schonbrunn_km, dist_train_station_km, neighbourhood, room_type, accomodates, bathrooms, amenities, host_acceptance_rate, host_listings_count, number_of_reviews, apt_age_days, review_scores_rating:reviews_per_month)
 
 data$cleaning_service <- ifelse(str_detect(data$amenities, regex("Cleaning available during stay", ignore_case = TRUE)), 1, 0)
 data$air_conditioning <- ifelse(str_detect(data$amenities, regex("Portable air conditioning|Air conditioning|Central air conditioning", ignore_case = TRUE)), 1, 0)
@@ -77,7 +77,7 @@ data$cleaning_service <- as.factor(data$cleaning_service)
 data$air_conditioning <- as.factor(data$air_conditioning)
 data$self_checkin <- as.factor(data$self_checkin)
 
-data_with_outliers <- data %>% dplyr::select(ID, host_id, price_dollars, latitude, longitude, dist_stephansdom_km, dist_schonbrunn_km, dist_train_station_km, neighbourhood, room_type, accomodates, bathrooms, beds, cleaning_service, air_conditioning, self_checkin, host_acceptance_rate, host_listings_count, number_of_reviews, apt_age_days, review_scores_rating:reviews_per_month)
+data_with_outliers <- data %>% dplyr::select(ID, host_id, price_dollars, latitude, longitude, dist_stephansdom_km, dist_schonbrunn_km, dist_train_station_km, neighbourhood, room_type, accomodates, bathrooms, cleaning_service, air_conditioning, self_checkin, host_acceptance_rate, host_listings_count, number_of_reviews, apt_age_days, review_scores_rating:reviews_per_month)
 
 View(data_with_outliers)
 

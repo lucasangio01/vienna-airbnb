@@ -17,6 +17,9 @@ regression_variables <- data %>%
   dplyr::select("price_dollars", "dist_stephansdom_km":"dist_train_station_km", "room_type":"reviews_per_month")
 View(regression_variables)
 
+numeric_variables <- regression_variables[sapply(regression_variables, is.numeric)]
+View(numeric_variables)
+
 
 ####################### MODELS #################################################
 
@@ -51,6 +54,8 @@ bi_weights2 <- bi_weights[order(robust_bisquare$w), ]
 bi_weights2[1:15, ]
 rse_robust_bisquare <- summary(robust_bisquare)$sigma
 residuals_robust_bisquare <- robust_bisquare$residuals
+
+robust_mcd <- covMcd(x = numeric_variables, alpha = 0.75)
 
 
 # Linear model - Step selection
