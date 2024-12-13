@@ -4,6 +4,7 @@ library(ggplot2)
 library(tmap)
 library(sf)
 library(osmdata)
+library(ggplot2)
 library(corrplot)
 
 
@@ -26,7 +27,7 @@ neighb_price <- data %>%
 ################################### PLOTS ######################################
 
 
-box_plot <- ggplot(data = numeric_variables, aes(x = variable, y = value, fill = variable)) + geom_boxplot() + labs(title = "Distribution of variables", x = "", y = "Value\n")
+box_plot <- ggplot(data = chosen_variables, aes(x = variable, y = value, fill = variable)) + geom_boxplot() + labs(title = "Distribution of variables", x = "", y = "Value\n")
 
 price_density <- ggplot(data = data, aes(x = price_dollars)) + geom_density(color = "darkgreen", fill = "lightgreen", lwd = 1) + labs(title = "Density of price", x = "Price", y = "Density")
 reviews_density <- ggplot(data = data, aes(x = review_scores_rating)) + geom_density(color = "blue", lwd = 1, fill = "lightblue") + labs(title = "Density of reviews", x = "Review score", y = "Density")
