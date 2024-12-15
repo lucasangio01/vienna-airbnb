@@ -1,6 +1,13 @@
-data <- read_csv('../data/vienna_listings_no_outliers.csv')
+library(lme4)
+library(tidyverse)
+library(insight)
+library(sjPlot)
+library(sf)
+library(tmap)
 
-vienna_shapefile <- st_read("../data/Vienna_Districts Shape/BEZIRKSGRENZEOGDPolygon.shp")
+data <- read_csv('/Users/tommipremoli8/Desktop/Progetti/ams-exam/data/vienna_listings_no_outliers.csv')
+
+vienna_shapefile <- st_read("/Users/tommipremoli8/Desktop/Progetti/ams-exam/data/Vienna_Districts Shape/BEZIRKSGRENZEOGDPolygon.shp")
 vienna_shapefile$NAMEK <- iconv(vienna_shapefile$NAMEK, from = "latin1", to = "UTF-8")
 
 airbnb_data_sf <- st_as_sf(
@@ -85,31 +92,6 @@ ggplot(data = vienna_shapefile) +
   scale_fill_gradient(
     name = "Avg Age",
     low = "#faebd7",  
-    high = "darkred", 
-    na.value = "white"
-  ) +
-  theme_minimal() +
-  labs(
-    title = "Average Airbnb Age by Neighbourhood in Vienna"
-  ) +
-  theme(legend.position = "right") +
-  geom_sf_text(aes(label = NAMEK), size = 3, color = "black", ,nudge_y = 0.5, nudge_x = 1) 
-
-
-
-# Average Reviews Scores Rating
-mean_reviews_per_month_per_neighbourhood <- data %>%
-  group_by(neighbourhood) %>%
-  summarise(reviews_per_month = mean(reviews_per_month, na.rm = TRUE))
-
-vienna_shapefile <- vienna_shapefile %>%
-  left_join(mean_reviews_per_month_per_neighbourhood, by = c("NAMEK" = "neighbourhood"))
-
-ggplot(data = vienna_shapefile) +
-  geom_sf(aes(fill = mean_reviews_per_month_per_neighbourhood), color = "grey") + 
-  scale_fill_gradient(
-    name = "Avg Age",
-    low = "white",  
     high = "darkred", 
     na.value = "white"
   ) +
