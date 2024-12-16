@@ -7,7 +7,7 @@ library(tmap)
 
 data <- read_csv('https://raw.githubusercontent.com/lucasangio01/vienna-airbnb/refs/heads/main/data/vienna_listings_no_outliers.csv')
 
-vienna_shapefile <- st_read("/Users/tommipremoli8/Desktop/Progetti/ams-exam/data/Vienna_Districts Shape/BEZIRKSGRENZEOGDPolygon.shp")
+vienna_shapefile <- st_read("./data/Vienna_Districts Shape/BEZIRKSGRENZEOGDPolygon.shp")
 vienna_shapefile$NAMEK <- iconv(vienna_shapefile$NAMEK, from = "latin1", to = "UTF-8")
 
 airbnb_data_sf <- st_as_sf(

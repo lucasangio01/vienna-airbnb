@@ -14,7 +14,7 @@ chosen_variables <- data %>%
   dplyr::select(-neighbourhood, -room_type) %>%
   pivot_longer(cols = everything(), names_to = "variable", values_to = "value")
 
-correlations <- corrplot(cor(chosen_variables), method = "circle", type = "upper")
+#correlations <- corrplot(cor(chosen_variables), method = "circle", type = "upper")
 
 neighb_count <- data %>%
   dplyr::count(neighbourhood, sort = TRUE)
@@ -29,10 +29,22 @@ neighb_price <- data %>%
 
 box_plot <- ggplot(data = chosen_variables, aes(x = variable, y = value, fill = variable)) + geom_boxplot() + labs(title = "Distribution of variables", x = "", y = "Value\n")
 
-price_density <- ggplot(data = data, aes(x = price_dollars)) + geom_density(color = "darkgreen", fill = "lightgreen", lwd = 1) + labs(title = "Density of price", x = "Price", y = "Density")
-reviews_density <- ggplot(data = data, aes(x = review_scores_rating)) + geom_density(color = "blue", lwd = 1, fill = "lightblue") + labs(title = "Density of reviews", x = "Review score", y = "Density")
-#lat_lon <- ggplot(data = data, aes(x = longitude, y = latitude, color = neighbourhood)) + geom_point()
-age_score <- ggplot(data = data, aes(x = apt_age_days, y = review_scores_rating)) + geom_point(color = "purple") + labs(title = "Apt age vs avg rating", x = "Apt age (days)",y = "Avg rating")
+price_density <- ggplot(data = data, aes(x = price_dollars)) + geom_density(color = "darkgreen", fill = "lightgreen", lwd = 1) + 
+  labs(title = "Density of price", x = "Price", y = "Density") + 
+  theme(axis.title = element_text(size = 16), axis.text = element_text(size = 14), plot.title = element_text(size = 18, face = "bold"))
 
-neighb_count_plot <- ggplot(data = neighb_count, aes(x = reorder(neighbourhood, n), y = n)) + geom_bar(stat = "identity", fill = "darkred") + labs(title = "Number of AirBnB, by neighbourhood", x = "", y = "") + theme(axis.text.x = element_text(angle = 45, hjust = 1))
-neighb_price_plot <- ggplot(data = neighb_price, aes(y = reorder(neighbourhood, mean_price), x = mean_price)) + geom_bar(stat = "identity", fill = "lightblue") + labs(title = "Average price by neighborhood", x = "", y = "") + theme_classic()
+reviews_density <- ggplot(data = data, aes(x = review_scores_rating)) + geom_density(color = "blue", lwd = 1, fill = "lightblue") + 
+  labs(title = "Density of reviews", x = "Review score", y = "Density") + 
+  theme(axis.title = element_text(size = 16),  axis.text = element_text(size = 14), plot.title = element_text(size = 18, face = "bold"))
+
+age_score <- ggplot(data = data, aes(x = apt_age_days, y = review_scores_rating)) + 
+  geom_point(color = "purple") + labs(title = "Apt age vs avg rating", x = "Apt age (days)",y = "Avg rating") + 
+  theme(axis.title = element_text(size = 16), axis.text = element_text(size = 14), plot.title = element_text(size = 18, face = "bold", hjust = 0.5))
+
+neighb_count_plot <- ggplot(data = neighb_count, aes(x = reorder(neighbourhood, n), y = n)) + 
+  geom_bar(stat = "identity", fill = "darkred") + labs(title = "Number of AirBnBs by Neighbourhood", x = "Neighbourhood", y = "Count") + 
+  theme(axis.title = element_text(size = 16), axis.text = element_text(size = 14), axis.text.x = element_text(angle = 45, hjust = 1), plot.title = element_text(size = 18, face = "bold", hjust = 0.5))
+
+neighb_price_plot <- ggplot(data = neighb_price, aes(y = reorder(neighbourhood, mean_price), x = mean_price)) + 
+  geom_bar(stat = "identity", fill = "lightblue") + labs(title = "Average Price by Neighborhood", x = "Average Price (USD)", y = "Neighborhood") + 
+  theme_classic() + theme(axis.title = element_text(size = 16), axis.text = element_text(size = 14), plot.title = element_text(size = 18, face = "bold", hjust = 0.5))
