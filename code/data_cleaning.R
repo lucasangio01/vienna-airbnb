@@ -5,7 +5,7 @@ library(sf)
 library(MASS) 
 
 
-data_original <- read_csv("./data/vienna_listings.csv")
+data_original <- read_csv("https://raw.githubusercontent.com/lucasangio01/vienna-airbnb/refs/heads/main/data/vienna_listings.csv")
 
 data <- data_original %>% dplyr::select(id, host_id, host_acceptance_rate, host_listings_count, neighbourhood_cleansed, latitude, longitude, room_type, accommodates, bathrooms, amenities, price, number_of_reviews, first_review, review_scores_rating:review_scores_value, reviews_per_month)
 data <- data %>% dplyr::select(id, host_id, price, latitude, longitude, neighbourhood_cleansed, room_type, accommodates, bathrooms, amenities, host_acceptance_rate, host_listings_count, number_of_reviews:review_scores_rating, reviews_per_month)

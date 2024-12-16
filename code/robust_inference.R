@@ -15,7 +15,7 @@ library(e1071)
 
 set.seed(123)
 
-data <- read_csv(".//data/vienna_listings_no_outliers.csv")
+data <- read_csv("https://raw.githubusercontent.com/lucasangio01/vienna-airbnb/refs/heads/main/data/vienna_listings_no_outliers.csv")
 View(data)
 
 regression_variables <- data %>%

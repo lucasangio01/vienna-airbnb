@@ -5,7 +5,7 @@ library(sjPlot)
 library(sf)
 library(tmap)
 
-data <- read_csv('../data/vienna_listings_no_outliers.csv')
+data <- read_csv('https://raw.githubusercontent.com/lucasangio01/vienna-airbnb/refs/heads/main/data/vienna_listings_no_outliers.csv')
 
 pal <- c(
   "#1f77b4", "#ff7f0e", "#2ca02c", "#bcbd22", "#9467bd", 
