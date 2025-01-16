@@ -33,7 +33,7 @@ ggplot(vienna_shapefile) +
   ) +
   theme_minimal() +
   labs(
-    title = "Airbnb Prices in Vienna",
+    title = "",
   ) +
   theme(legend.position = "right") +
   geom_sf_label(aes(label = NAMEK), size = 2.5, color = "black", nudge_y = 0.5, nudge_x = 1) +
@@ -50,7 +50,7 @@ ggplot(vienna_shapefile) +
   ) +
   theme_minimal() +
   labs(
-    title = "Airbnb Room Types in Vienna"
+    title = ""
   ) +
   theme(legend.position = "right") +
   geom_sf_label(aes(label = NAMEK), size = 2.5, color = "black", nudge_y = 0.5, nudge_x = 1) +
@@ -97,7 +97,7 @@ ggplot(data = vienna_shapefile) +
   ) +
   theme_minimal() +
   labs(
-    title = "Average Airbnb Age by Neighbourhood in Vienna"
+    title = ""
   ) +
   theme(legend.position = "right") +
   geom_sf_text(aes(label = NAMEK), size = 3, color = "black", ,nudge_y = 0.5, nudge_x = 1) 

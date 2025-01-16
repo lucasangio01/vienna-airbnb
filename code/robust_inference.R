@@ -77,8 +77,8 @@ huber_eval <- as.data.frame(huber_eval)
 
 ggplot(huber_eval, aes(x = huber_eval$Predicted, y = huber_eval$Actual)) +
   geom_point() +
-  geom_abline(intercept = 0, slope = 1, col = "red", lwd = 1) +
-  labs(title = "Huber Robust Model - Predicted vs Actual Values", x = "Predicted Value", y = "Actual Value")
+  geom_abline(intercept = 0, slope = 1, col = "blue", lwd = 1) +
+  labs(title = "", x = "Predicted Value", y = "Actual Value")
 
 huber_rsq <- 1 - (sum((regr_testset$price_dollars - huber_pred)^2) / sum((regr_testset$price_dollars - mean(regr_testset$price_dollars))^2))
 huber_residuals <- regr_testset$price_dollars - huber_pred

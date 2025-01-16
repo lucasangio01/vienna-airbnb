@@ -34,7 +34,7 @@ price_density <- ggplot(data = data, aes(x = price_dollars)) + geom_density(colo
   theme(axis.title = element_text(size = 16), axis.text = element_text(size = 14), plot.title = element_text(size = 18, face = "bold"))
 
 reviews_density <- ggplot(data = data, aes(x = review_scores_rating)) + geom_density(color = "blue", lwd = 1, fill = "lightblue") + 
-  labs(title = "Density of reviews", x = "Review score", y = "Density") + 
+  labs(title = "", x = "Review score", y = "Density") + 
   theme(axis.title = element_text(size = 16),  axis.text = element_text(size = 14), plot.title = element_text(size = 18, face = "bold"))
 
 age_score <- ggplot(data = data, aes(x = apt_age_days, y = review_scores_rating)) + 
@@ -42,7 +42,7 @@ age_score <- ggplot(data = data, aes(x = apt_age_days, y = review_scores_rating)
   theme(axis.title = element_text(size = 16), axis.text = element_text(size = 14), plot.title = element_text(size = 18, face = "bold", hjust = 0.5))
 
 neighb_count_plot <- ggplot(data = neighb_count, aes(x = reorder(neighbourhood, n), y = n)) + 
-  geom_bar(stat = "identity", fill = "darkred") + labs(title = "Number of AirBnBs by Neighbourhood", x = "Neighbourhood", y = "Count") + 
+  geom_bar(stat = "identity", fill = "midnightblue") + labs(title = "", x = "Neighbourhood", y = "") + 
   theme(axis.title = element_text(size = 16), axis.text = element_text(size = 14), axis.text.x = element_text(angle = 45, hjust = 1), plot.title = element_text(size = 18, face = "bold", hjust = 0.5))
 
 neighb_price_plot <- ggplot(data = neighb_price, aes(y = reorder(neighbourhood, mean_price), x = mean_price)) + 
